@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "nombre": "MarioKart",
+    "categoria": "Carreras",
+    "img": "./img/mario_kart.jpg",
+    "precio": 3600,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 2,
+    "nombre": "Slime Rancher",
+    "categoria": "Simulacion",
+    "img": "./img/slime_rancher.jpg",
+    "precio": 700,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 3,
+    "nombre": "BattleBlock Theater",
+    "categoria": "Cooperativos",
+    "img": "./img/battleblock_theater.jpg",
+    "precio": 299,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 4,
+    "nombre": "Valorant",
+    "categoria": "Shooter",
+    "img": "./img/valorant.jpg",
+    "precio": 3400,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 5,
+    "nombre": "Zelda",
+    "categoria": "RPG",
+    "img": "./img/zelda.png",
+    "precio": 6546,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 6,
+    "nombre": "Pokemon Sword",
+    "categoria": "RPG",
+    "img": "./img/pokemon_sword.jpg",
+    "precio": 5000,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 7,
+    "nombre": "Just Dance 2022",
+    "categoria": "Ritmo",
+    "img": "./img/just_dance.png",
+    "precio": 3456,
+    "cantidadCarrito": 1
+  },
+  {
+    "id": 8,
+    "nombre": "PUBG",
+    "categoria": "Shooter",
+    "img": "./img/PUBG.jpg",
+    "precio": 800,
+    "cantidadCarrito": 1
+  }
+]
