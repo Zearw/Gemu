@@ -1,43 +1,4 @@
-.modal-contenedor {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.5s;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.modal-active {
-  opacity: 1;
-  visibility: visible;
-  z-index: 5;
-}
-
-.modal-active .modal-carrito {
-  margin-top: 0;
-}
-
-.modal-carrito #carritoCerrar {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 20px;
-  color: rgb(100, 64, 201);
-  border: none;
-  background-color: white;
-}
-.modal-carrito #carritoCerrar:hover {
-  cursor: pointer;
-}
-.modal-carrito #carritoCerrar:focus {
-  outline: none;
-}
-.modal-carrito .precioProducto {
+.precioProducto {
   padding-top: 10px;
 
   font-weight: bold;
@@ -48,8 +9,9 @@
   border-top-left-radius: 3px;
   margin: 5px 0;
   padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(6, 150px 110px 50px 50px 50px 50px);
+  grid-template-rows: repeat(auto-fill, 50px);
 }
 .productoCarrito:hover {
   border-left: 5px solid rgb(100, 64, 201);
@@ -69,26 +31,17 @@
   outline: none;
 }
 
-.modal-carrito {
-  position: relative;
-  background-color: white;
-  min-width: 600px;
-  padding: 15px;
-  margin-top: -100%;
-  transition: all 0.5s;
-  h3 {
-    color: black;
-    padding-bottom: 5px;
-  }
-  div {
-    p {
-      margin-top: 0;
-      margin-bottom: 0.3rem;
-    }
-  }
-}
-
 h4 {
   display: none;
   justify-content: space-around;
+}
+
+header {
+  background-image: url(../img/bg-buy-games2.gif);
+  background-size: cover;
+}
+
+footer {
+  background-image: url(../img/bg-buy-games.gif);
+  background-size: cover;
 }

@@ -7,10 +7,23 @@ $.getJSON("../json/stock.json", function (dato) {
   mostrarProductos(stockProductos);
 });
 
+/*Recupera los datos almacenados en el localStorage*/
+
+function recuperar() {
+  let recuperar = JSON.parse(localStorage.getItem("carrito"));
+
+  if (recuperar) {
+    recuperar.forEach((objeto) => {
+      insertarJueguitoDesdeJson(objeto);
+    });
+  }
+  actualizarCarrito();
+}
+
 /*Muestra los productos en la pantalla principal y crea el boton de Agregar y su evento*/
-function mostrarProductos(array) {
+function mostrarProductos(stockProductos) {
   $("#contenedor-productos").empty();
-  array.forEach((juego) => {
+  stockProductos.forEach((juego) => {
     $("#contenedor-productos").append(`
     <div class="producto">  
       <div class="col mb-5">
@@ -42,122 +55,90 @@ function mostrarProductos(array) {
 
     $(`#boton${juego.id}`).on("click", function () {
       agregarCarrito(juego.id);
+      Toastify({
+        text: "✔ Juego Agregado",
+        className: "info",
+        style: {
+          background: "green",
+        },
+      }).showToast();
     });
   });
 }
 
-/*Verifica los productos actuales del carrita y agrega nuevos productos*/
+/*Verifica los productos actuales del carrito y agrega nuevos productos*/
 
 function agregarCarrito(id) {
   let agrego = carritoCompras.find((el) => el.id == id);
   if (agrego) {
-    agrego.cantidadCarrito += 1;
-    $(`#cantidad${agrego.id}`).html(`
-    <p id="cantidad${agrego.id}" >Cantidad: ${agrego.cantidadCarrito}</p>
-    `);
+    aumentarCantCarrito(agrego);
   } else {
-    let productoAgregar = stockProductos.find((producto) => producto.id == id);
-    carritoCompras.push(productoAgregar);
-    mostrarCarrito(productoAgregar);
+    let aux = stockProductos.find((producto) => producto.id == id);
+    insertarJueguitoDesdeJson(aux);
   }
   actualizarCarrito();
   localStorage.setItem("carrito", JSON.stringify(carritoCompras));
 }
 
-/*Agrega el HTML al carrito y crea el boton eliminar con su evento*/
+/*Agrega el HTML al carrito y crea los botones para modificar la cant*/
 
-function mostrarCarrito(productoAgregar) {
+function mostrarCarrito(productoClase) {
   $("#carrito-contenedor").append(`
   <div class="productoCarrito">
-    <p>${productoAgregar.nombre}</p>
-    <p>Precio: $${productoAgregar.precio}</p>
-    <p id="cantidad${productoAgregar.id}" >Cantidad: ${productoAgregar.cantidadCarrito}</p>
-    <button class="boton-eliminar" id="eliminar${productoAgregar.id}"><i class="bi bi-trash"></i></button>
+    <p>${productoClase.nombre}</p>
+    <p>Precio: $${productoClase.precio}</p>
+    <button type="button" class="btn btn-dark" id="restar${productoClase.id}"><i class="bi bi-dash-lg"></i></button>
+    <div class="card">
+      <div class="card-body" id="cantidad${productoClase.id}">
+        ${productoClase.cantidadCarrito}
+      </div>
+    </div>
+    <button type="button" class="btn btn-dark" id="sumar${productoClase.id}"><i class="bi bi-plus-lg"></i></button>
+    <button class="boton-eliminar" id="eliminar${productoClase.id}"><i class="bi bi-trash"></i></button>
   </div>
   `);
 
-  $(`#eliminar${productoAgregar.id}`).click(function () {
-    if (productoAgregar.cantidadCarrito == 1) {
-      $(`#eliminar${productoAgregar.id}`).parent().remove();
-      carritoCompras = carritoCompras.filter(
-        (elemento) => elemento.id != productoAgregar.id
-      );
-    } else {
-      productoAgregar.cantidadCarrito -= 1;
-      $(`#cantidad${productoAgregar.id}`).html(
-        `<p id="cantidad${productoAgregar.id}">Cantidad:${productoAgregar.cantidadCarrito}</p>`
-      );
-    }
+  $(`#sumar${productoClase.id}`).click(function () {
+    aumentarCantCarrito(productoClase);
+    actualizarCarrito();
+  });
 
+  $(`#restar${productoClase.id}`).click(function () {
+    if (productoClase.cantidadCarrito == 1) {
+      eliminarJuegoCarrito(productoClase);
+    } else {
+      disminuirCantCarrito(productoClase);
+    }
+    actualizarCarrito();
+  });
+
+  $(`#eliminar${productoClase.id}`).click(function () {
+    eliminarJuegoCarrito(productoClase);
     actualizarCarrito();
     localStorage.setItem("carrito", JSON.stringify(carritoCompras));
   });
 }
 
-/*Recupera los datos almacenados en el localStorage*/
+/*Finaliza la compra*/
 
-function recuperar() {
-  let recuperar = JSON.parse(localStorage.getItem("carrito"));
-
-  if (recuperar) {
-    recuperar.forEach((objeto) => {
-      mostrarCarrito(objeto);
-      carritoCompras.push(objeto);
-    });
-  }
-  actualizarCarrito();
-}
-
-/*Actualiza los calculos del carrito*/
-
-function actualizarCarrito() {
-  $("#contadorCarrito").text(
-    carritoCompras.reduce((acc, el) => acc + el.cantidadCarrito, 0)
-  );
-
-  $("#precioTotal").text(
-    carritoCompras.reduce((acc, el) => acc + el.precio * el.cantidadCarrito, 0)
-  );
-}
-
-recuperar();
-
-$("#finalizar").append(
-  `<button id="finalCompra" class="btn btn-dark">Terminar</button>`
-);
-
-$("#finalCompra").on("click", () => {
+$("#botonFinalizarCompra").on("click", () => {
   $.post(
     "https://jsonplaceholder.typicode.com/posts",
     JSON.stringify(carritoCompras),
     function (estado) {
       if (estado) {
         $("#carrito-contenedor").empty();
-        $("#form").append(`
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Para finalizar la compra, por favor ingrese su mail.</label>
-          <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" required>
-      </div>`);
-        $("#finalizar").html(
-          `<button type="submit" id="finalizarCompra" class="btn btn-dark">Finalizar Compra</button>`
-        );
-        $("#finalizarCompra").on("click", () => {
-          $("#form").empty();
-          $("#carrito-contenedor").append(
-            "<h4>En breve recibiras un correo con el pedido. Gracias por elegirnos.</h4>"
-          );
-
-          $("h4").slideDown().delay(2000).slideUp();
-
-          $("#finalizar").html(
-            `<button id="finalCompra" class="btn btn-dark">Terminar</button>`
-          );
-
-          carritoCompras = [];
-          localStorage.clear();
-          actualizarCarrito();
-        });
+        $("#graciastexto").delay(350).fadeIn();
+        carritoCompras = [];
+        localStorage.clear();
+        actualizarCarrito();
       }
     }
   );
 });
+
+recuperar();
+
+if (carritoCompras.length == 0) {
+  $("#comprarBoton").hide();
+}
