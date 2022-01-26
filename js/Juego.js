@@ -7,6 +7,5 @@ class Juego {
     this.precio = precio;
     this.stock = stock;
     this.cantidadCarrito = cantidadCarrito == undefined ? 1 : cantidadCarrito;
-    console.log(this.cantidadCarrito);
   }
 }
